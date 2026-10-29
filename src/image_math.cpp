@@ -179,65 +179,46 @@ inline static void swap(unsigned short& a, unsigned short& b)
     b = t;
 }
 
+inline static void compare_swap(unsigned short& a, unsigned short& b)
+{
+    unsigned short lo = std::min(a, b);
+    unsigned short hi = std::max(a, b);
+    a = lo;
+    b = hi;
+}
+
 inline static unsigned short median9(const unsigned short l[9])
 {
-    unsigned short l0 = l[0], l1 = l[1], l2 = l[2], l3 = l[3], l4 = l[4];
-    unsigned short x;
-    x = l[5];
-    if (x < l0)
-        swap(x, l0);
-    if (x < l1)
-        swap(x, l1);
-    if (x < l2)
-        swap(x, l2);
-    if (x < l3)
-        swap(x, l3);
-    if (x < l4)
-        swap(x, l4);
-    x = l[6];
-    if (x < l0)
-        swap(x, l0);
-    if (x < l1)
-        swap(x, l1);
-    if (x < l2)
-        swap(x, l2);
-    if (x < l3)
-        swap(x, l3);
-    if (x < l4)
-        swap(x, l4);
-    x = l[7];
-    if (x < l0)
-        swap(x, l0);
-    if (x < l1)
-        swap(x, l1);
-    if (x < l2)
-        swap(x, l2);
-    if (x < l3)
-        swap(x, l3);
-    if (x < l4)
-        swap(x, l4);
-    x = l[8];
-    if (x < l0)
-        swap(x, l0);
-    if (x < l1)
-        swap(x, l1);
-    if (x < l2)
-        swap(x, l2);
-    if (x < l3)
-        swap(x, l3);
-    if (x < l4)
-        swap(x, l4);
+    unsigned short p[9];
+    std::copy(l, l + 9, p);
 
-    if (l1 > l0)
-        l0 = l1;
-    if (l2 > l0)
-        l0 = l2;
-    if (l3 > l0)
-        l0 = l3;
-    if (l4 > l0)
-        l0 = l4;
+    // A 19-comparator selection network places the median in p[4].
+    compare_swap(p[1], p[2]);
+    compare_swap(p[4], p[5]);
+    compare_swap(p[7], p[8]);
 
-    return l0;
+    compare_swap(p[0], p[1]);
+    compare_swap(p[3], p[4]);
+    compare_swap(p[6], p[7]);
+
+    compare_swap(p[1], p[2]);
+    compare_swap(p[4], p[5]);
+    compare_swap(p[7], p[8]);
+
+    compare_swap(p[0], p[3]);
+    compare_swap(p[5], p[8]);
+    compare_swap(p[4], p[7]);
+
+    compare_swap(p[3], p[6]);
+    compare_swap(p[1], p[4]);
+    compare_swap(p[2], p[5]);
+
+    compare_swap(p[4], p[7]);
+    compare_swap(p[4], p[2]);
+    compare_swap(p[6], p[4]);
+    compare_swap(p[4], p[2]);
+
+    return p[4];
 }
 
 inline static unsigned short median8(const unsigned short l[8])
